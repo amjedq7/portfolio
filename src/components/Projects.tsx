@@ -1,36 +1,22 @@
 import { motion } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
-
-const GithubIcon = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-  </svg>
-);
 
 const projects = [
   {
-    title: "E-Commerce Platform",
-    description: "A full-stack shopping experience with real-time cart updates and secure checkout.",
-    tech: ["React", "TypeScript", "Tailwind", "Zustand"],
+    title: "Muslimská obec v Teplicích",
+    description: "Replace this description with details about your first project. Keep it concise and impactful.",
+    tech: ["React", "TypeScript", "Tailwind"],
+    live: "https://muslimska-obec-v-teplicich.cz/", 
+    // Dynamically uses the base path for GitHub Pages
+    image: import.meta.env.BASE_URL + "project-1.png", 
     colSpan: "md:col-span-2",
   },
   {
-    title: "Task Manager AI",
-    description: "Smart productivity app that organizes workflows.",
-    tech: ["Vite", "Framer Motion", "OpenAI"],
+    title: "Urologie Jahaf",
+    description: "Brief description of the second project.",
+    tech: ["React", "Vite", "Tailwind"],
+    live: "https://amjedq7.github.io/web-jahaf/#/", 
+    image: import.meta.env.BASE_URL + "project-2.png", 
     colSpan: "md:col-span-1",
-  },
-  {
-    title: "Financial Dashboard",
-    description: "Real-time crypto and stock tracking interface with interactive charts.",
-    tech: ["React", "D3.js", "Tailwind"],
-    colSpan: "md:col-span-1",
-  },
-  {
-    title: "Social Connect",
-    description: "A community platform for developers to share snippets and collaborate.",
-    tech: ["Next.js", "Prisma", "Tailwind"],
-    colSpan: "md:col-span-2",
   }
 ];
 
@@ -50,22 +36,39 @@ export default function Projects() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {projects.map((project, index) => (
-          <motion.div
+          <motion.a
+            href={project.live}
+            target="_blank"
+            rel="noopener noreferrer"
             key={index}
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: index * 0.1 }}
             whileHover={{ y: -5 }}
-            className={`group relative p-6 rounded-3xl backdrop-blur-md bg-white/5 border border-white/10 hover:border-emerald-500/30 transition-all duration-300 flex flex-col justify-between ${project.colSpan} overflow-hidden`}
+            className={`group block relative rounded-3xl backdrop-blur-md bg-white/5 border border-white/10 hover:border-emerald-500/30 transition-all duration-300 flex flex-col overflow-hidden cursor-pointer ${project.colSpan}`}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            
-            <div className="relative z-10">
+            {/* Project Image Container */}
+            <div className="w-full h-48 sm:h-56 bg-zinc-800 relative overflow-hidden flex items-center justify-center">
+              <div className="absolute inset-0 bg-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
+              <img 
+                src={project.image} 
+                alt={project.title} 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800';
+                }}
+              />
+            </div>
+
+            {/* Content Container */}
+            <div className="p-6 flex flex-col flex-grow relative z-20">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              
               <h3 className="text-2xl font-bold text-zinc-50 mb-3">{project.title}</h3>
               <p className="text-zinc-400 mb-6">{project.description}</p>
               
-              <div className="flex flex-wrap gap-2 mb-8">
+              <div className="flex flex-wrap gap-2 mt-auto">
                 {project.tech.map((tech, i) => (
                   <span key={i} className="px-3 py-1 text-xs font-medium text-emerald-300 bg-emerald-500/10 rounded-full border border-emerald-500/20">
                     {tech}
@@ -73,16 +76,7 @@ export default function Projects() {
                 ))}
               </div>
             </div>
-
-            <div className="relative z-10 flex gap-4 mt-auto">
-              <a href="#" className="flex items-center gap-2 text-sm font-medium text-zinc-300 hover:text-emerald-400 transition-colors">
-                <GithubIcon className="h-4 w-4" /> Code
-              </a>
-              <a href="#" className="flex items-center gap-2 text-sm font-medium text-zinc-300 hover:text-emerald-400 transition-colors">
-                <ExternalLink className="h-4 w-4" /> Live Demo
-              </a>
-            </div>
-          </motion.div>
+          </motion.a>
         ))}
       </div>
     </div>
