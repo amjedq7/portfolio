@@ -11,12 +11,25 @@ export default function App() {
   const [activeSection, setActiveSection] = useState('home');
   const [showScrollTop, setShowScrollTop] = useState(false);
 
+  const handleNavigate = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+      setActiveSection(id);
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 500);
       
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
+        setActiveSection('contact');
+        return;
+      }
+
       const sections = ['home', 'about', 'projects', 'contact'];
-      const scrollPosition = window.scrollY + 200;
+      const scrollPosition = window.scrollY + 300;
 
       for (const section of sections) {
         const el = document.getElementById(section);
@@ -35,44 +48,33 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 selection:bg-emerald-500/30 selection:text-emerald-900 dark:selection:text-emerald-400 transition-colors duration-300">
+    <div className="relative min-h-screen overflow-x-hidden bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors duration-300">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div className="absolute -top-[40%] -left-[20%] h-[80%] w-[60%] rounded-full bg-emerald-500/10 dark:bg-emerald-500/5 blur-[120px]" />
         <div className="absolute top-[60%] -right-[20%] h-[70%] w-[50%] rounded-full bg-blue-500/10 dark:bg-blue-500/5 blur-[120px]" />
       </div>
 
-      <Navbar activeSection={activeSection} />
+      <Navbar activeSection={activeSection} onNavigate={handleNavigate} />
 
       <main className="relative z-10 mx-auto max-w-7xl px-6">
-        <AnimatePresence mode="wait">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
-          >
-            <section id="home" className="min-h-screen pt-24 flex items-center">
-              <Hero />
-            </section>
-            
-            <section id="about" className="py-24">
-              <About />
-            </section>
-            
-            <section id="projects" className="py-24">
-              <Projects />
-            </section>
-            
-            <section id="contact" className="py-24">
-              <Contact />
-            </section>
-          </motion.div>
-        </AnimatePresence>
+        <section id="home" className="min-h-screen pt-24 flex items-center">
+          <Hero />
+        </section>
+        
+        <section id="about" className="py-24">
+          <About />
+        </section>
+        
+        <section id="projects" className="py-24">
+          <Projects />
+        </section>
+        
+        <section id="contact" className="py-24">
+          <Contact />
+        </section>
       </main>
 
       <AnimatePresence>
