@@ -24,7 +24,7 @@ export default function Navbar({ activeSection, onNavigate }: NavbarProps) {
         className="flex items-center gap-2 cursor-pointer group text-zinc-900 dark:text-white font-semibold tracking-tight pointer-events-auto"
       >
         <Code2 className="h-6 w-6 text-emerald-500 dark:text-emerald-400 transition-transform group-hover:rotate-12" />
-        <span className="hidden sm:inline text-lg">Dev<span className="text-emerald-500 dark:text-emerald-400">.</span>Portfolio</span>
+        <span className="hidden sm:inline text-lg font-bold">Amjed<span className="text-emerald-500 dark:text-emerald-400">Q7</span></span>
       </div>
 
       <nav className="absolute left-1/2 -translate-x-1/2 flex items-center p-1.5 rounded-full backdrop-blur-md bg-white/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/50 shadow-lg dark:shadow-2xl pointer-events-auto transition-all duration-300">
@@ -38,7 +38,7 @@ export default function Navbar({ activeSection, onNavigate }: NavbarProps) {
                   <motion.div
                     layoutId="navbar-indicator"
                     className="absolute inset-0 bg-emerald-500/10 border border-emerald-500/20 rounded-full"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
                 <button

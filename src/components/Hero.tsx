@@ -1,7 +1,11 @@
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 
-export default function Hero() {
+interface HeroProps {
+  onNavigate?: (id: string) => void;
+}
+
+export default function Hero({ onNavigate }: HeroProps) {
   return (
     <div className="flex flex-col items-start justify-center w-full py-20">
       <motion.div
@@ -23,7 +27,13 @@ export default function Hero() {
         </p>
         
         <button 
-          onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+          onClick={() => {
+            if (onNavigate) {
+              onNavigate('projects');
+            } else {
+              document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
           className="group flex items-center gap-2 px-6 py-3 bg-emerald-500 text-zinc-950 font-bold rounded-full hover:bg-emerald-400 transition-all duration-300 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)]"
         >
           View My Work
