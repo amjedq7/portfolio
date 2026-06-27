@@ -3,16 +3,15 @@ import { motion } from 'framer-motion';
 const projects = [
   {
     title: "Muslimská obec v Teplicích",
-    description: "Replace this description with details about your first project. Keep it concise and impactful.",
+    description: "A modern, highly responsive community platform built to provide essential information and a seamless user experience.",
     tech: ["React", "TypeScript", "Tailwind", "Vite"],
     live: "https://muslimska-obec-v-teplicich.cz/", 
-    // Dynamically uses the base path for GitHub Pages
     image: import.meta.env.BASE_URL + "project-1.png", 
     colSpan: "md:col-span-2",
   },
   {
     title: "Urologie Jahaf",
-    description: "Brief description of the second project.",
+    description: "A professional medical practice website designed for accessibility, fast load times, and clear patient communication.",
     tech: ["React", "TypeScript", "Tailwind", "Vite"],
     live: "https://amjedq7.github.io/web-jahaf/#/", 
     image: import.meta.env.BASE_URL + "project-2.png", 
@@ -22,7 +21,7 @@ const projects = [
 
 export default function Projects() {
   return (
-    <div id="projects" className="w-full py-20">
+    <div className="w-full">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -30,7 +29,7 @@ export default function Projects() {
         transition={{ duration: 0.5 }}
         className="mb-12"
       >
-        <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Selected Projects</h2>
+        <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">My projects</h2>
         <div className="h-1 w-20 bg-emerald-500 rounded-full"></div>
       </motion.div>
 
@@ -48,7 +47,6 @@ export default function Projects() {
             whileHover={{ y: -5 }}
             className={`group block relative rounded-3xl backdrop-blur-md bg-white/5 border border-white/10 hover:border-emerald-500/30 transition-all duration-300 flex flex-col overflow-hidden cursor-pointer ${project.colSpan}`}
           >
-            {/* Project Image Container */}
             <div className="w-full h-48 sm:h-56 bg-zinc-800 relative overflow-hidden flex items-center justify-center">
               <div className="absolute inset-0 bg-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
               <img 
@@ -61,7 +59,6 @@ export default function Projects() {
               />
             </div>
 
-            {/* Content Container */}
             <div className="p-6 flex flex-col flex-grow relative z-20">
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               
