@@ -11,7 +11,7 @@ export default function App() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['home', 'projects', 'about', 'contact'];
+      const sections = ['home', 'about', 'projects', 'contact'];
       const scrollPosition = window.scrollY + 200;
 
       for (const section of sections) {
@@ -52,12 +52,12 @@ export default function App() {
               <Hero />
             </section>
             
-            <section id="projects" className="py-24">
-              <Projects />
-            </section>
-            
             <section id="about" className="py-24">
               <About />
+            </section>
+            
+            <section id="projects" className="py-24">
+              <Projects />
             </section>
             
             <section id="contact" className="py-24">

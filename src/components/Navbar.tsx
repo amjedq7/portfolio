@@ -10,8 +10,8 @@ export default function Navbar({ activeSection }: NavbarProps) {
 
   const navItems = [
     { id: 'home', label: t('Domů', 'Home'), icon: Terminal },
-    { id: 'projects', label: t('Projekty', 'Projects'), icon: Briefcase },
     { id: 'about', label: t('O mně', 'About'), icon: User },
+    { id: 'projects', label: t('Projekty', 'Projects'), icon: Briefcase },
     { id: 'contact', label: t('Kontakt', 'Contact'), icon: Mail },
   ];
 
@@ -24,7 +24,6 @@ export default function Navbar({ activeSection }: NavbarProps) {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 pointer-events-none">
-      {/* Logo - Top Left */}
       <div 
         onClick={() => scrollToSection('home')} 
         className="flex items-center gap-2 cursor-pointer group text-zinc-900 dark:text-white font-semibold tracking-tight pointer-events-auto"
@@ -33,7 +32,6 @@ export default function Navbar({ activeSection }: NavbarProps) {
         <span className="hidden sm:inline text-lg">Dev<span className="text-emerald-500 dark:text-emerald-400">.</span>Portfolio</span>
       </div>
 
-      {/* Center Nav Pill */}
       <nav className="absolute left-1/2 -translate-x-1/2 flex items-center p-1.5 rounded-full backdrop-blur-md bg-white/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/50 shadow-lg dark:shadow-2xl pointer-events-auto transition-all duration-300">
         <ul className="flex items-center gap-1 sm:gap-2">
           {navItems.map((item) => {
@@ -58,7 +56,6 @@ export default function Navbar({ activeSection }: NavbarProps) {
         </ul>
       </nav>
 
-      {/* Settings Controls - Top Right */}
       <div className="flex items-center gap-3 pointer-events-auto">
         <button
           onClick={toggleLanguage}
