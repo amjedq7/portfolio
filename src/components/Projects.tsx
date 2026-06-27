@@ -4,7 +4,7 @@ const projects = [
   {
     title: "Muslimská obec v Teplicích",
     description: "Replace this description with details about your first project. Keep it concise and impactful.",
-    tech: ["React", "TypeScript", "Tailwind"],
+    tech: ["React", "TypeScript", "Tailwind", "Vite"],
     live: "https://muslimska-obec-v-teplicich.cz/", 
     // Dynamically uses the base path for GitHub Pages
     image: import.meta.env.BASE_URL + "project-1.png", 
@@ -13,7 +13,7 @@ const projects = [
   {
     title: "Urologie Jahaf",
     description: "Brief description of the second project.",
-    tech: ["React", "Vite", "Tailwind"],
+    tech: ["React", "TypeScript", "Tailwind", "Vite"],
     live: "https://amjedq7.github.io/web-jahaf/#/", 
     image: import.meta.env.BASE_URL + "project-2.png", 
     colSpan: "md:col-span-1",
