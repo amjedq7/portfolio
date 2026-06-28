@@ -332,8 +332,8 @@ export default function App() {
 
   const CardHighlight = ({ sectionId }: { sectionId: string }) => (
     <div 
-      className={`absolute inset-0 sm:-inset-x-6 -z-10 rounded-3xl pointer-events-none transition-all duration-1000 ease-out ring-1 ${
-        sectionId === 'home' ? 'top-24' : ''
+      className={`absolute inset-x-0 sm:-inset-x-6 -z-10 rounded-3xl pointer-events-none transition-all duration-1000 ease-out ring-1 top-24 ${
+        sectionId === 'home' ? 'bottom-0' : 'bottom-12'
       } ${
         highlightedSection === sectionId 
           ? 'bg-red-500/10 dark:bg-red-500/15 shadow-[0_0_40px_rgba(239,68,68,0.2)] ring-red-500/40 opacity-100 scale-100' 
