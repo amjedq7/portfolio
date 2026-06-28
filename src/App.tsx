@@ -332,12 +332,12 @@ export default function App() {
 
   const CardHighlight = ({ sectionId }: { sectionId: string }) => (
     <div 
-      className={`absolute inset-0 sm:-inset-x-6 -z-10 rounded-3xl pointer-events-none transition-all duration-500 ease-out ${
+      className={`absolute inset-0 sm:-inset-x-6 -z-10 rounded-3xl pointer-events-none transition-all duration-1000 ease-out ring-1 ${
         sectionId === 'home' ? 'top-24' : ''
       } ${
         highlightedSection === sectionId 
-          ? 'bg-red-500/10 dark:bg-red-500/15 shadow-[0_0_40px_rgba(239,68,68,0.2)] ring-1 ring-red-500/40 opacity-100 scale-100' 
-          : 'opacity-0 scale-95 ring-transparent bg-transparent'
+          ? 'bg-red-500/10 dark:bg-red-500/15 shadow-[0_0_40px_rgba(239,68,68,0.2)] ring-red-500/40 opacity-100 scale-100' 
+          : 'bg-red-100/0 dark:bg-red-950/0 shadow-[0_0_0px_rgba(239,68,68,0)] ring-red-100/0 dark:ring-red-900/0 opacity-0 scale-[0.99]'
       }`} 
     />
   );
