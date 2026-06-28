@@ -21,6 +21,7 @@ export default function Hero({ onNavigate }: HeroProps) {
         { t1: 'ようこそ', t2: '私の家へ' },
         { t1: 'Добро пожаловать в', t2: 'мой дом' },
         { t1: '欢迎来到', t2: '我的家' },
+        { t1: 'مرحباً بكم في', t2: 'بيتي' },
       ]
     : [
         { t1: 'Welcome to', t2: 'my home' },
@@ -32,6 +33,7 @@ export default function Hero({ onNavigate }: HeroProps) {
         { t1: 'ようこそ', t2: '私の家へ' },
         { t1: 'Добро пожаловать в', t2: 'мой дом' },
         { t1: '欢迎来到', t2: '我的家' },
+        { t1: 'مرحباً بكم في', t2: 'بيتي' },
       ];
 
   const baseText1 = greetings[0].t1;
