@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUp } from 'lucide-react';
 import Navbar from './components/Navbar';
@@ -87,41 +87,54 @@ const RedStars = () => {
 };
 
 const InteractiveLines = () => {
-  const linesRef = useRef<(SVGGElement | null)[]>([]);
-  const [linePoints, setLinePoints] = useState<{ x: number, y: number }[][]>([]);
+  const pathsRef = useRef<(SVGPathElement | null)[]>([]);
+  const pointsRef = useRef<{ id: number, pts: {ox: number, oy: number, x: number, y: number, vx: number, vy: number}[] }[]>([]);
+  const mouseRef = useRef({ x: -1000, y: -1000 });
+
+  const curves = useMemo(() => [
+    { d: "M-10,40 C30,-20 70,120 110,60", grad: "url(#line-grad1)", w1: 1.5, o1: 0.3, w2: 0.15, anim: "animate-[pulse_4s_ease-in-out_infinite]" },
+    { d: "M-10,70 C40,120 60,-20 110,30", grad: "url(#line-grad2)", w1: 1.5, o1: 0.3, w2: 0.15, anim: "animate-[pulse_5s_ease-in-out_infinite_1s]" },
+    { d: "M-10,50 C30,20 70,80 110,50", grad: "url(#line-grad1)", w1: 2.5, o1: 0.15, w2: 0.1, anim: "animate-[pulse_6s_ease-in-out_infinite_2s]" },
+    { d: "M-10,20 C20,100 80,0 110,80", grad: "url(#line-grad2)", w1: 1, o1: 0.4, w2: 0.2, anim: "animate-[pulse_4.5s_ease-in-out_infinite_0.5s]" },
+    { d: "M-10,60 C40,40 60,60 110,40", grad: "url(#line-grad1)", w1: 0.8, o1: 0.3, w2: 0.05, anim: "animate-[pulse_5.5s_ease-in-out_infinite_1.5s]" }
+  ], []);
 
   useEffect(() => {
-    // Sample points along each SVG path to track distance accurately
+    let animationFrameId: number;
+
+    // Use a slight timeout to ensure paths are fully painted in the DOM 
+    // so that getTotalLength() does not crash in certain browsers (like Firefox/Safari)
     setTimeout(() => {
-      const points: { x: number, y: number }[][] = [];
-      linesRef.current.forEach((g) => {
-        if (!g) {
-          points.push([]);
-          return;
+      pointsRef.current = curves.map((_, id) => {
+        const pathEl = pathsRef.current[id * 2];
+        if (!pathEl) return { id, pts: [] };
+
+        let len = 200;
+        try {
+          len = pathEl.getTotalLength();
+        } catch(e) {
+          console.warn("SVG length error:", e);
         }
-        const path = g.querySelector('path');
-        if (path) {
-          const length = path.getTotalLength();
-          const pts = [];
-          for (let i = 0; i <= 30; i++) {
-            const domPt = path.getPointAtLength((i / 30) * length);
-            pts.push({ x: domPt.x, y: domPt.y });
+
+        const pts = [];
+        const numPoints = 100; // High resolution string
+        for (let i = 0; i <= numPoints; i++) {
+          try {
+            const pt = pathEl.getPointAtLength((i / numPoints) * len);
+            pts.push({ ox: pt.x, oy: pt.y, x: pt.x, y: pt.y, vx: 0, vy: 0 });
+          } catch(e) {
+            pts.push({ ox: 0, oy: 0, x: 0, y: 0, vx: 0, vy: 0 });
           }
-          points.push(pts);
-        } else {
-          points.push([]);
         }
+        return { id, pts };
       });
-      setLinePoints(points);
+
+      render();
     }, 100);
-  }, []);
 
-  useEffect(() => {
-    if (linePoints.length === 0) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const mouseX = e.clientX;
-      const mouseY = e.clientY;
+    const render = () => {
+      const mouseX = mouseRef.current.x;
+      const mouseY = mouseRef.current.y;
       const screenW = window.innerWidth;
       const screenH = window.innerHeight;
       
@@ -130,48 +143,78 @@ const InteractiveLines = () => {
       const offsetX = screenW * -0.05;
       const offsetY = screenH * -0.05;
 
-      linesRef.current.forEach((g, index) => {
-        if (!g) return;
-        const pts = linePoints[index];
-        if (!pts || pts.length === 0) return;
+      pointsRef.current.forEach((line, index) => {
+        const path1 = pathsRef.current[index * 2];
+        const path2 = pathsRef.current[index * 2 + 1];
+        if (!path1 || !path2 || !line.pts.length) return;
 
-        let minDist = Infinity;
-        let closestScreenX = 0;
-        let closestScreenY = 0;
+        line.pts.forEach((p, i) => {
+          // Pin the extreme edges so the lines don't detach
+          if (i === 0 || i === line.pts.length - 1) return;
 
-        for (const pt of pts) {
-          const ptScreenX = offsetX + (pt.x / 100) * svgW;
-          const ptScreenY = offsetY + (pt.y / 100) * svgH;
+          // Map point's original position to screen coordinates
+          const ptScreenX = offsetX + (p.ox / 100) * svgW;
+          const ptScreenY = offsetY + (p.oy / 100) * svgH;
+
           const dx = mouseX - ptScreenX;
           const dy = mouseY - ptScreenY;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < minDist) {
-            minDist = dist;
-            closestScreenX = ptScreenX;
-            closestScreenY = ptScreenY;
+          
+          const maxDist = 60; // Very tight radius so ONLY the small part moving
+          let tx = p.ox;
+          let ty = p.oy;
+
+          if (dist < maxDist) {
+             const force = Math.pow((maxDist - dist) / maxDist, 2); 
+             // Push away sharply
+             const moveScreenX = -(dx / dist) * force * 50; 
+             const moveScreenY = -(dy / dist) * force * 50;
+             tx = p.ox + (moveScreenX / svgW) * 100;
+             ty = p.oy + (moveScreenY / svgH) * 100;
           }
+
+          // Snappy spring physics
+          p.vx += (tx - p.x) * 0.3; // High tension
+          p.vx *= 0.6; // High friction so it doesn't wobble forever
+          p.vy += (ty - p.y) * 0.3;
+          p.vy *= 0.6;
+
+          p.x += p.vx;
+          p.y += p.vy;
+        });
+
+        // Use direct LineTo commands instead of CurveTo smoothing. 
+        // This makes the displaced point form a sharp, distinct 'V' shape break.
+        const pts = line.pts;
+        let d = `M${pts[0].x},${pts[0].y} `;
+        for (let i = 1; i < pts.length; i++) {
+          d += `L${pts[i].x},${pts[i].y} `;
         }
 
-        const maxDist = 120; // Trigger radius
-        
-        if (minDist < maxDist) {
-          const force = (maxDist - minDist) / maxDist;
-          const dx = closestScreenX - mouseX;
-          const dy = closestScreenY - mouseY;
-          // Push away very subtly (15px max) so it doesn't move too much
-          const moveX = (dx / minDist) * force * 15; 
-          const moveY = (dy / minDist) * force * 15;
-          
-          g.style.transform = `translate(${moveX}px, ${moveY}px)`;
-        } else {
-          g.style.transform = `translate(0px, 0px)`;
-        }
+        path1.setAttribute("d", d);
+        path2.setAttribute("d", d);
       });
+
+      animationFrameId = requestAnimationFrame(render);
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [linePoints]);
+    render();
+
+    const handleMouse = (e: MouseEvent) => {
+      mouseRef.current = { x: e.clientX, y: e.clientY };
+    };
+    const handleMouseLeave = () => {
+      mouseRef.current = { x: -1000, y: -1000 };
+    };
+
+    window.addEventListener("mousemove", handleMouse);
+    window.addEventListener("mouseleave", handleMouseLeave);
+    return () => {
+      window.removeEventListener("mousemove", handleMouse);
+      window.removeEventListener("mouseleave", handleMouseLeave);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [curves]);
 
   return (
     <svg 
@@ -194,31 +237,25 @@ const InteractiveLines = () => {
         </linearGradient>
       </defs>
 
-      {/* Floating animations for the lines */}
-      <g ref={el => linesRef.current[0] = el} className="transition-transform duration-150 ease-out animate-[pulse_4s_ease-in-out_infinite]">
-        <path d="M-10,40 C30,-20 70,120 110,60" fill="none" stroke="url(#line-grad1)" strokeWidth="1.5" opacity="0.3" />
-        <path d="M-10,40 C30,-20 70,120 110,60" fill="none" stroke="url(#line-grad1)" strokeWidth="0.15" />
-      </g>
-
-      <g ref={el => linesRef.current[1] = el} className="transition-transform duration-150 ease-out animate-[pulse_5s_ease-in-out_infinite_1s]">
-        <path d="M-10,70 C40,120 60,-20 110,30" fill="none" stroke="url(#line-grad2)" strokeWidth="1.5" opacity="0.3" />
-        <path d="M-10,70 C40,120 60,-20 110,30" fill="none" stroke="url(#line-grad2)" strokeWidth="0.15" />
-      </g>
-
-      <g ref={el => linesRef.current[2] = el} className="transition-transform duration-150 ease-out animate-[pulse_6s_ease-in-out_infinite_2s]">
-        <path d="M-10,50 C30,20 70,80 110,50" fill="none" stroke="url(#line-grad1)" strokeWidth="2.5" opacity="0.15" />
-        <path d="M-10,50 C30,20 70,80 110,50" fill="none" stroke="url(#line-grad1)" strokeWidth="0.1" />
-      </g>
-
-      <g ref={el => linesRef.current[3] = el} className="transition-transform duration-150 ease-out animate-[pulse_4.5s_ease-in-out_infinite_0.5s]">
-        <path d="M-10,20 C20,100 80,0 110,80" fill="none" stroke="url(#line-grad2)" strokeWidth="1" opacity="0.4" />
-        <path d="M-10,20 C20,100 80,0 110,80" fill="none" stroke="url(#line-grad2)" strokeWidth="0.2" />
-      </g>
-
-      <g ref={el => linesRef.current[4] = el} className="transition-transform duration-150 ease-out animate-[pulse_5.5s_ease-in-out_infinite_1.5s]">
-        <path d="M-10,60 C40,40 60,60 110,40" fill="none" stroke="url(#line-grad1)" strokeWidth="0.8" opacity="0.3" />
-        <path d="M-10,60 C40,40 60,60 110,40" fill="none" stroke="url(#line-grad1)" strokeWidth="0.05" />
-      </g>
+      {curves.map((curve, i) => (
+        <g key={i} className={curve.anim}>
+          <path 
+            ref={el => pathsRef.current[i * 2] = el} 
+            d={curve.d} 
+            fill="none" 
+            stroke={curve.grad} 
+            strokeWidth={curve.w1} 
+            opacity={curve.o1} 
+          />
+          <path 
+            ref={el => pathsRef.current[i * 2 + 1] = el} 
+            d={curve.d} 
+            fill="none" 
+            stroke={curve.grad} 
+            strokeWidth={curve.w2} 
+          />
+        </g>
+      ))}
     </svg>
   );
 };
