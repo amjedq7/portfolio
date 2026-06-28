@@ -6,6 +6,7 @@ import Hero from './components/Hero';
 import Projects from './components/Projects';
 import About from './components/About';
 import Contact from './components/Contact';
+import Footer from './components/Footer';
 
 const RedStars = () => {
   const starsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -380,6 +381,8 @@ export default function App() {
           <Contact />
         </section>
       </main>
+
+      <Footer />
 
       <AnimatePresence>
         {showScrollTop && (
