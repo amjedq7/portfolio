@@ -228,8 +228,8 @@ export default function App() {
   const [highlightedSection, setHighlightedSection] = useState<string | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const isProgrammaticScroll = useRef(false);
-  const scrollTimeout = useRef<NodeJS.Timeout>();
-  const highlightTimeout = useRef<NodeJS.Timeout>();
+  const scrollTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const highlightTimeout = useRef<ReturnType<typeof setTimeout>>();
 
   const handleNavigate = (id: string) => {
     // If the user clicks the same section they are currently on, do nothing

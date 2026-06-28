@@ -8,7 +8,7 @@ interface HeroProps {
 }
 
 export default function Hero({ onNavigate }: HeroProps) {
-  const { t, language } = useSettings();
+  const { t } = useSettings();
 
   const text1 = t('Vytvářím moderní', 'Building modern');
   const text2 = t('webové zážitky.', 'web experiences.');
@@ -25,7 +25,7 @@ export default function Hero({ onNavigate }: HeroProps) {
   }, [text1, text2]);
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
+    let timeout: ReturnType<typeof setTimeout>;
     const speed = 50;
     const pauseTime = 4000;
 
