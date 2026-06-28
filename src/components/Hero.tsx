@@ -10,8 +10,8 @@ interface HeroProps {
 export default function Hero({ onNavigate }: HeroProps) {
   const { t } = useSettings();
 
-  const text1 = t('Vytvářím moderní', 'Building modern');
-  const text2 = t('webové zážitky.', 'web experiences.');
+  const text1 = t('Vítejte u mě', 'Welcome to');
+  const text2 = t('doma', 'my home');
 
   const [displayed1, setDisplayed1] = useState('');
   const [displayed2, setDisplayed2] = useState('');
@@ -78,7 +78,7 @@ export default function Hero({ onNavigate }: HeroProps) {
             )}
           </span>
           <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-blue-600 dark:from-red-400 dark:to-blue-500">
+          <span>
             {displayed2}
             {(phase === 'type2' || phase === 'delete2' || phase === 'pause') && (
               <span className="inline-block font-light animate-pulse -ml-1">|</span>
@@ -86,7 +86,7 @@ export default function Hero({ onNavigate }: HeroProps) {
           </span>
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed">
-          {t('Vytvářím úžasná, bleskově rychlá a vysoce responzivní digitální rozhraní pomocí Reactu, TypeScriptu a Tailwind CSS.', 'I craft stunning, lightning-fast, and highly responsive digital interfaces using React, TypeScript, and Tailwind CSS.')}
+          {t('Vytvářím stránky jak pro mladé, tak pro dospělé. Využívám na ně React, TypeScript a Tailwind.', 'I create websites for both young and old. I use React, TypeScript, and Tailwind.')}
         </p>
         
         <button 

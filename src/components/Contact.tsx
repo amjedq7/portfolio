@@ -33,10 +33,10 @@ export default function Contact() {
         viewport={{ once: true }}
       >
         <h2 className="text-3xl md:text-5xl font-extrabold text-zinc-900 dark:text-white mb-6">
-          {t('Pojďme něco vytvořit.', "Let's build something.")}
+          {t('Něco na srdci?', "Something on your mind?")}
         </h2>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg mb-12">
-          {t('Momentálně jsem otevřený novým příležitostem. Ať už máte dotaz, nebo chcete jen pozdravit, pokusím se vám co nejdříve ozvat!', "Currently open for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!")}
+          {t('Chcete vědět více o mně, nebo máte nějaký dotaz či přání? Najdete mě na GitHubu nebo LinkedIn, anebo se se mnou můžete spojit přes e-mail.', "Want to know more about me, or do you have a question or request? Find me on GitHub or LinkedIn, or you can connect with me via email.")}
         </p>
 
         <div className="flex flex-wrap justify-center gap-4">

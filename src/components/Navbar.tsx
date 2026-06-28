@@ -24,7 +24,7 @@ export default function Navbar({ activeSection, onNavigate }: NavbarProps) {
         className="flex items-center gap-3 cursor-pointer group text-zinc-900 dark:text-white font-semibold tracking-tight pointer-events-auto"
       >
         <Code2 className="h-8 w-8 text-red-500 dark:text-red-400 transition-transform group-hover:rotate-12" />
-        <span className="hidden sm:inline text-xl sm:text-2xl font-bold">Amjed<span className="text-red-500 dark:text-red-400">Q7</span></span>
+        <span className="hidden sm:inline text-xl sm:text-2xl font-bold">AmjedQ7</span>
       </div>
 
       <nav className="absolute left-1/2 -translate-x-1/2 flex items-center p-2 rounded-full backdrop-blur-md bg-white/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/50 shadow-lg dark:shadow-2xl pointer-events-auto transition-all duration-300">

@@ -6,8 +6,8 @@ export default function Projects() {
 
   const projects = [
     {
-      title: "Muslimská obec v Teplicích",
-      description: t("Moderní, vysoce responzivní komunitní platforma vytvořená pro poskytování základních informací a bezproblémový uživatelský zážitek.", "A modern, highly responsive community platform built to provide essential information and a seamless user experience."),
+      title: t("MUSLIMSKÁ OBEC V TEPLICÍCH", "ISLAMIC FOUNDATION TEPLICE"),
+      description: t("Moderní komunitní platforma, která poskytuje informace o náboženství, časy modliteb, kontakty komunity, ...", "A modern community platform that provides information about religion, prayer times, community contacts, ..."),
       tech: ["React", "TypeScript", "Tailwind", "Vite"],
       live: "https://muslimska-obec-v-teplicich.cz/", 
       image: import.meta.env.BASE_URL + "project-1.png", 
@@ -15,7 +15,7 @@ export default function Projects() {
     },
     {
       title: "Urologie Jahaf",
-      description: t("Profesionální webová stránka lékařské praxe navržená s ohledem na přístupnost, rychlé načítání a jasnou komunikaci s pacienty.", "A professional medical practice website designed for accessibility, fast load times, and clear patient communication."),
+      description: t("Urologická ordinace nabízející vyšetření močových cest, prostaty a onkologickou prevenci v moderně vybavené ordinaci.", "Urology clinic offering examinations of the urinary tract, prostate, and oncological prevention in a modernly equipped clinic."),
       tech: ["React", "TypeScript", "Tailwind", "Vite"],
       live: "https://amjedq7.github.io/web-jahaf/#/", 
       image: import.meta.env.BASE_URL + "project-2.png", 
