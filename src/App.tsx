@@ -40,13 +40,13 @@ const RedStars = () => {
         const dy = mouseY - starY;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        const maxDist = 150; // Influence radius
+        const maxDist = 300; // Influence radius
         
         if (dist < maxDist) {
           const force = (maxDist - dist) / maxDist;
           // Move away from mouse
-          const moveX = -(dx / dist) * force * 40; 
-          const moveY = -(dy / dist) * force * 40;
+          const moveX = -(dx / dist) * force * 60; 
+          const moveY = -(dy / dist) * force * 60;
           
           starEl.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.5)`;
         } else {
@@ -83,6 +83,143 @@ const RedStars = () => {
         />
       ))}
     </div>
+  );
+};
+
+const InteractiveLines = () => {
+  const linesRef = useRef<(SVGGElement | null)[]>([]);
+  const [linePoints, setLinePoints] = useState<{ x: number, y: number }[][]>([]);
+
+  useEffect(() => {
+    // Sample points along each SVG path to track distance accurately
+    setTimeout(() => {
+      const points: { x: number, y: number }[][] = [];
+      linesRef.current.forEach((g) => {
+        if (!g) {
+          points.push([]);
+          return;
+        }
+        const path = g.querySelector('path');
+        if (path) {
+          const length = path.getTotalLength();
+          const pts = [];
+          for (let i = 0; i <= 30; i++) {
+            const domPt = path.getPointAtLength((i / 30) * length);
+            pts.push({ x: domPt.x, y: domPt.y });
+          }
+          points.push(pts);
+        } else {
+          points.push([]);
+        }
+      });
+      setLinePoints(points);
+    }, 100);
+  }, []);
+
+  useEffect(() => {
+    if (linePoints.length === 0) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+      const screenW = window.innerWidth;
+      const screenH = window.innerHeight;
+      
+      const svgW = screenW * 1.1;
+      const svgH = screenH * 1.1;
+      const offsetX = screenW * -0.05;
+      const offsetY = screenH * -0.05;
+
+      linesRef.current.forEach((g, index) => {
+        if (!g) return;
+        const pts = linePoints[index];
+        if (!pts || pts.length === 0) return;
+
+        let minDist = Infinity;
+        let closestScreenX = 0;
+        let closestScreenY = 0;
+
+        for (const pt of pts) {
+          const ptScreenX = offsetX + (pt.x / 100) * svgW;
+          const ptScreenY = offsetY + (pt.y / 100) * svgH;
+          const dx = mouseX - ptScreenX;
+          const dy = mouseY - ptScreenY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < minDist) {
+            minDist = dist;
+            closestScreenX = ptScreenX;
+            closestScreenY = ptScreenY;
+          }
+        }
+
+        const maxDist = 120; // Trigger radius
+        
+        if (minDist < maxDist) {
+          const force = (maxDist - minDist) / maxDist;
+          const dx = closestScreenX - mouseX;
+          const dy = closestScreenY - mouseY;
+          // Push away very subtly (15px max) so it doesn't move too much
+          const moveX = (dx / minDist) * force * 15; 
+          const moveY = (dy / minDist) * force * 15;
+          
+          g.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        } else {
+          g.style.transform = `translate(0px, 0px)`;
+        }
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [linePoints]);
+
+  return (
+    <svg 
+      className="absolute w-[110%] h-[110%] -left-[5%] -top-[5%] opacity-70 dark:opacity-100" 
+      viewBox="0 0 100 100" 
+      preserveAspectRatio="none"
+    >
+      <defs>
+        <linearGradient id="line-grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="rgba(239, 68, 68, 0)" />
+          <stop offset="30%" stopColor="rgba(239, 68, 68, 1)" />
+          <stop offset="70%" stopColor="rgba(239, 68, 68, 1)" />
+          <stop offset="100%" stopColor="rgba(239, 68, 68, 0)" />
+        </linearGradient>
+        <linearGradient id="line-grad2" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="rgba(239, 68, 68, 0)" />
+          <stop offset="20%" stopColor="rgba(220, 38, 38, 1)" />
+          <stop offset="80%" stopColor="rgba(220, 38, 38, 1)" />
+          <stop offset="100%" stopColor="rgba(239, 68, 68, 0)" />
+        </linearGradient>
+      </defs>
+
+      {/* Floating animations for the lines */}
+      <g ref={el => linesRef.current[0] = el} className="transition-transform duration-150 ease-out animate-[pulse_4s_ease-in-out_infinite]">
+        <path d="M-10,40 C30,-20 70,120 110,60" fill="none" stroke="url(#line-grad1)" strokeWidth="1.5" opacity="0.3" />
+        <path d="M-10,40 C30,-20 70,120 110,60" fill="none" stroke="url(#line-grad1)" strokeWidth="0.15" />
+      </g>
+
+      <g ref={el => linesRef.current[1] = el} className="transition-transform duration-150 ease-out animate-[pulse_5s_ease-in-out_infinite_1s]">
+        <path d="M-10,70 C40,120 60,-20 110,30" fill="none" stroke="url(#line-grad2)" strokeWidth="1.5" opacity="0.3" />
+        <path d="M-10,70 C40,120 60,-20 110,30" fill="none" stroke="url(#line-grad2)" strokeWidth="0.15" />
+      </g>
+
+      <g ref={el => linesRef.current[2] = el} className="transition-transform duration-150 ease-out animate-[pulse_6s_ease-in-out_infinite_2s]">
+        <path d="M-10,50 C30,20 70,80 110,50" fill="none" stroke="url(#line-grad1)" strokeWidth="2.5" opacity="0.15" />
+        <path d="M-10,50 C30,20 70,80 110,50" fill="none" stroke="url(#line-grad1)" strokeWidth="0.1" />
+      </g>
+
+      <g ref={el => linesRef.current[3] = el} className="transition-transform duration-150 ease-out animate-[pulse_4.5s_ease-in-out_infinite_0.5s]">
+        <path d="M-10,20 C20,100 80,0 110,80" fill="none" stroke="url(#line-grad2)" strokeWidth="1" opacity="0.4" />
+        <path d="M-10,20 C20,100 80,0 110,80" fill="none" stroke="url(#line-grad2)" strokeWidth="0.2" />
+      </g>
+
+      <g ref={el => linesRef.current[4] = el} className="transition-transform duration-150 ease-out animate-[pulse_5.5s_ease-in-out_infinite_1.5s]">
+        <path d="M-10,60 C40,40 60,60 110,40" fill="none" stroke="url(#line-grad1)" strokeWidth="0.8" opacity="0.3" />
+        <path d="M-10,60 C40,40 60,60 110,40" fill="none" stroke="url(#line-grad1)" strokeWidth="0.05" />
+      </g>
+    </svg>
   );
 };
 
@@ -175,46 +312,8 @@ export default function App() {
         {/* Red Stars Layer */}
         <RedStars />
 
-        <svg 
-          className="absolute w-full h-full opacity-70 dark:opacity-100" 
-          viewBox="0 0 100 100" 
-          preserveAspectRatio="none"
-        >
-          <defs>
-            <linearGradient id="line-grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="rgba(239, 68, 68, 0)" />
-              <stop offset="30%" stopColor="rgba(239, 68, 68, 1)" />
-              <stop offset="70%" stopColor="rgba(239, 68, 68, 1)" />
-              <stop offset="100%" stopColor="rgba(239, 68, 68, 0)" />
-            </linearGradient>
-            <linearGradient id="line-grad2" x1="100%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="rgba(239, 68, 68, 0)" />
-              <stop offset="20%" stopColor="rgba(220, 38, 38, 1)" />
-              <stop offset="80%" stopColor="rgba(220, 38, 38, 1)" />
-              <stop offset="100%" stopColor="rgba(239, 68, 68, 0)" />
-            </linearGradient>
-          </defs>
-
-          {/* Line 1 */}
-          <path d="M-10,40 C30,-20 70,120 110,60" fill="none" stroke="url(#line-grad1)" strokeWidth="1.5" opacity="0.3" />
-          <path d="M-10,40 C30,-20 70,120 110,60" fill="none" stroke="url(#line-grad1)" strokeWidth="0.15" />
-
-          {/* Line 2 */}
-          <path d="M-10,70 C40,120 60,-20 110,30" fill="none" stroke="url(#line-grad2)" strokeWidth="1.5" opacity="0.3" />
-          <path d="M-10,70 C40,120 60,-20 110,30" fill="none" stroke="url(#line-grad2)" strokeWidth="0.15" />
-
-          {/* Line 3 */}
-          <path d="M-10,50 C30,20 70,80 110,50" fill="none" stroke="url(#line-grad1)" strokeWidth="2.5" opacity="0.15" />
-          <path d="M-10,50 C30,20 70,80 110,50" fill="none" stroke="url(#line-grad1)" strokeWidth="0.1" />
-
-          {/* Line 4 */}
-          <path d="M-10,20 C20,100 80,0 110,80" fill="none" stroke="url(#line-grad2)" strokeWidth="1" opacity="0.4" />
-          <path d="M-10,20 C20,100 80,0 110,80" fill="none" stroke="url(#line-grad2)" strokeWidth="0.2" />
-
-          {/* Line 5 */}
-          <path d="M-10,60 C40,40 60,60 110,40" fill="none" stroke="url(#line-grad1)" strokeWidth="0.8" opacity="0.3" />
-          <path d="M-10,60 C40,40 60,60 110,40" fill="none" stroke="url(#line-grad1)" strokeWidth="0.05" />
-        </svg>
+        {/* Interactive Floating Lines */}
+        <InteractiveLines />
         
         {/* Subtle red ambient glow so it isn't too dark */}
         <div className="absolute -top-[40%] -left-[20%] h-[80%] w-[60%] rounded-full bg-red-500/10 dark:bg-red-500/5 blur-[120px]" />
