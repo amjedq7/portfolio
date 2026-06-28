@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Code2, Terminal, User, Mail, Briefcase, Sun, Moon, Menu } from 'lucide-react';
+import { Code2, House, User, Mail, Presentation, Sun, Moon, Menu } from 'lucide-react';
 import { useSettings } from '../context/SettingsContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -13,9 +13,9 @@ export default function Navbar({ activeSection, onNavigate }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
-    { id: 'home', label: t('Domů', 'Home'), icon: Terminal },
+    { id: 'home', label: t('Domů', 'Home'), icon: House },
     { id: 'about', label: t('O mně', 'About'), icon: User },
-    { id: 'projects', label: t('Projekty', 'Projects'), icon: Briefcase },
+    { id: 'projects', label: t('Projekty', 'Projects'), icon: Presentation },
     { id: 'contact', label: t('Kontakt', 'Contact'), icon: Mail },
   ];
 
