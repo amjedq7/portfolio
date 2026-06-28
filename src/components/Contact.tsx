@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Mail } from 'lucide-react';
+import { useSettings } from '../context/SettingsContext';
 
 const GithubIcon = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -16,6 +17,8 @@ const LinkedinIcon = ({ className }: { className?: string }) => (
 );
 
 export default function Contact() {
+  const { t } = useSettings();
+
   const links = [
     { icon: GithubIcon, label: "GitHub", href: "https://github.com/amjedq7" },
     { icon: LinkedinIcon, label: "LinkedIn", href: "https://www.linkedin.com/in/amjed-quwarah/" },
@@ -29,9 +32,11 @@ export default function Contact() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-6">Let's build something.</h2>
-        <p className="text-zinc-400 text-lg mb-12">
-          Currently open for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+        <h2 className="text-3xl md:text-5xl font-extrabold text-zinc-900 dark:text-white mb-6">
+          {t('Pojďme něco vytvořit.', "Let's build something.")}
+        </h2>
+        <p className="text-zinc-600 dark:text-zinc-400 text-lg mb-12">
+          {t('Momentálně jsem otevřený novým příležitostem. Ať už máte dotaz, nebo chcete jen pozdravit, pokusím se vám co nejdříve ozvat!', "Currently open for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!")}
         </p>
 
         <div className="flex flex-wrap justify-center gap-4">
@@ -43,7 +48,7 @@ export default function Contact() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-6 py-3 rounded-full backdrop-blur-md bg-white/5 border border-white/10 text-zinc-300 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all duration-300 group"
+                className="flex items-center gap-2 px-6 py-3 rounded-full backdrop-blur-md bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-700 dark:text-zinc-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-500/30 transition-all duration-300 group shadow-md dark:shadow-none"
               >
                 <Icon className="h-5 w-5 transition-transform group-hover:-translate-y-1" />
                 <span className="font-medium">{link.label}</span>
