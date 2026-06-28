@@ -69,7 +69,7 @@ export default function Navbar({ activeSection, onNavigate }: NavbarProps) {
           <button onClick={toggleLanguage} className="flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full backdrop-blur-md bg-white/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/50 text-zinc-600 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 hover:border-red-500/30 shadow-lg transition-all font-bold text-sm uppercase">
             {language}
           </button>
-          <button onClick={toggleTheme} className="flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full backdrop-blur-md bg-white/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/50 text-zinc-600 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 hover:border-red-500/30 shadow-lg transition-all">
+          <button onClick={toggleTheme} aria-label="Toggle theme" className="flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full backdrop-blur-md bg-white/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/50 text-zinc-600 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 hover:border-red-500/30 shadow-lg transition-all">
             {theme === 'dark' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
           </button>
         </div>
@@ -78,6 +78,7 @@ export default function Navbar({ activeSection, onNavigate }: NavbarProps) {
         <div className="sm:hidden relative pointer-events-auto shrink-0">
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
             className="flex items-center justify-center h-10 w-10 rounded-full backdrop-blur-md bg-white/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/50 text-zinc-600 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 shadow-lg transition-all"
           >
             <Menu className="h-5 w-5" />
@@ -94,7 +95,7 @@ export default function Navbar({ activeSection, onNavigate }: NavbarProps) {
                 <button onClick={() => { toggleLanguage(); setIsMenuOpen(false); }} className="flex items-center justify-center h-10 w-10 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 font-bold text-xs uppercase transition-colors">
                   {language}
                 </button>
-                <button onClick={() => { toggleTheme(); setIsMenuOpen(false); }} className="flex items-center justify-center h-10 w-10 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 transition-colors">
+                <button onClick={() => { toggleTheme(); setIsMenuOpen(false); }} aria-label="Toggle theme" className="flex items-center justify-center h-10 w-10 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 transition-colors">
                   {theme === 'dark' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
                 </button>
               </motion.div>
