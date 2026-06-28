@@ -7,7 +7,7 @@ export default function About() {
   const skillCategories = [
     {
       title: t("Vývoj Frontendu", "Frontend Development"),
-      skills: ["React", "TypeScript", "Tailwind CSS", "HTML5", "CSS3"]
+      skills: ["React", "TypeScript", "Tailwind"]
     },
     {
       title: t("Nástroje a systémy", "Tools & Systems"),
