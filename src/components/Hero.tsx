@@ -8,26 +8,55 @@ interface HeroProps {
 }
 
 export default function Hero({ onNavigate }: HeroProps) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
 
-  const text1 = t('Vítejte u mě', 'Welcome to');
-  const text2 = t('doma', 'my home');
+  const greetings = language === 'cs'
+    ? [
+        { t1: 'Vítejte u mě', t2: 'doma' },
+        { t1: 'Welcome to', t2: 'my home' },
+        { t1: 'Willkommen in', t2: 'meinem Zuhause' },
+        { t1: 'Bienvenue dans', t2: 'ma maison' },
+        { t1: 'Bienvenido a', t2: 'mi casa' },
+        { t1: 'Benvenuto a', t2: 'casa mia' },
+        { t1: 'ようこそ', t2: '私の家へ' },
+        { t1: 'Добро пожаловать в', t2: 'мой дом' },
+        { t1: '欢迎来到', t2: '我的家' },
+      ]
+    : [
+        { t1: 'Welcome to', t2: 'my home' },
+        { t1: 'Willkommen in', t2: 'meinem Zuhause' },
+        { t1: 'Bienvenue dans', t2: 'ma maison' },
+        { t1: 'Bienvenido a', t2: 'mi casa' },
+        { t1: 'Benvenuto a', t2: 'casa mia' },
+        { t1: 'Vítejte u mě', t2: 'doma' },
+        { t1: 'ようこそ', t2: '私の家へ' },
+        { t1: 'Добро пожаловать в', t2: 'мой дом' },
+        { t1: '欢迎来到', t2: '我的家' },
+      ];
 
+  const baseText1 = greetings[0].t1;
+  const baseText2 = greetings[0].t2;
+
+  const [langIndex, setLangIndex] = useState(0);
   const [displayed1, setDisplayed1] = useState('');
   const [displayed2, setDisplayed2] = useState('');
   const [phase, setPhase] = useState<'type1' | 'type2' | 'pause' | 'delete2' | 'delete1' | 'idle'>('type1');
+
+  const text1 = greetings[langIndex].t1;
+  const text2 = greetings[langIndex].t2;
 
   // Reset when language changes
   useEffect(() => {
     setDisplayed1('');
     setDisplayed2('');
+    setLangIndex(0);
     setPhase('type1');
-  }, [text1, text2]);
+  }, [language]);
 
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>;
-    const speed = 50;
-    const pauseTime = 4000;
+    const speed = 40;
+    const pauseTime = 2000;
 
     if (phase === 'type1') {
       if (displayed1.length < text1.length) {
@@ -56,11 +85,35 @@ export default function Hero({ onNavigate }: HeroProps) {
         timeout = setTimeout(() => setPhase('idle'), 1500);
       }
     } else if (phase === 'idle') {
+      setLangIndex((prev) => (prev + 1) % greetings.length);
       setPhase('type1');
     }
 
     return () => clearTimeout(timeout);
   }, [displayed1, displayed2, phase, text1, text2]);
+
+  const renderLine = (displayed: string, base: string, showCursor: boolean, isDeletePhase: boolean) => {
+    const words = displayed.split(' ');
+    const lastWord = words.pop() || '';
+    const restText = words.length > 0 ? words.join(' ') + ' ' : '';
+    
+    return (
+      <>
+        {restText}
+        <span className="whitespace-nowrap">
+          {lastWord}
+          {showCursor && (
+            <span className="inline-block font-light animate-pulse -ml-1 text-zinc-900 dark:text-white">|</span>
+          )}
+        </span>
+        {isDeletePhase && (
+          <span className="text-zinc-300 dark:text-zinc-600">
+            {base.slice(displayed.length)}
+          </span>
+        )}
+      </>
+    );
+  };
 
   return (
     <div className="flex flex-col lg:flex-row items-center justify-between w-full py-20 gap-12 lg:gap-8">
@@ -70,19 +123,13 @@ export default function Hero({ onNavigate }: HeroProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <h1 className="text-5xl md:text-7xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-tight mb-6 min-h-[140px] md:min-h-[180px]">
+        <h1 className="text-5xl md:text-7xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-tight mb-6 min-h-[140px] md:min-h-[180px] whitespace-pre-wrap">
           <span>
-            {displayed1}
-            {(phase === 'type1' || phase === 'delete1' || phase === 'idle') && (
-              <span className="inline-block font-light animate-pulse -ml-1">|</span>
-            )}
+            {renderLine(displayed1, baseText1, phase === 'type1' || phase === 'delete1' || phase === 'idle', phase === 'delete1' || phase === 'delete2')}
           </span>
           <br />
           <span>
-            {displayed2}
-            {(phase === 'type2' || phase === 'delete2' || phase === 'pause') && (
-              <span className="inline-block font-light animate-pulse -ml-1">|</span>
-            )}
+            {renderLine(displayed2, baseText2, phase === 'type2' || phase === 'delete2' || phase === 'pause', phase === 'delete1' || phase === 'delete2')}
           </span>
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed">

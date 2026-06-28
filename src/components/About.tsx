@@ -10,8 +10,20 @@ export default function About() {
       skills: ["React", "TypeScript", "Tailwind CSS", "HTML5", "CSS3"]
     },
     {
-      title: t("Nástroje & Workflow", "Tools & Workflow"),
-      skills: ["Git", "GitHub", "Vite", "NPM"]
+      title: t("Nástroje a systémy", "Tools & Systems"),
+      skills: ["Git", "GitHub", "Vite", "Linux (Fedora)", "Windows"]
+    },
+    {
+      title: t("Další technologie", "Other Technologies"),
+      skills: ["C", "Python", "Bash"]
+    },
+    {
+      title: t("Jazykové znalosti", "Spoken Languages"),
+      skills: [
+        t("Čeština", "Czech"), 
+        t("Angličtina", "English"), 
+        t("Arabština", "Arabic")
+      ]
     }
   ];
 
@@ -26,13 +38,10 @@ export default function About() {
         <h2 className="text-3xl md:text-4xl font-extrabold text-zinc-900 dark:text-white mb-4">{t('O mně', 'About Me')}</h2>
         <div className="h-1 w-20 bg-blue-500 rounded-full mb-8"></div>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg leading-relaxed mb-6">
-          {t('Jsem webový vývojář, který rád vytváří krásné a funkční webové stránky pro lidi a firmy. Rád měním nápady ve skutečné, fungující digitální zážitky, které uživatelé milují.', 'I am a web developer who loves building beautiful, functional websites for people and businesses. I enjoy taking ideas and turning them into real, working digital experiences that users love.')}
-        </p>
-        <p className="text-zinc-600 dark:text-zinc-400 text-lg leading-relaxed mb-6">
-          {t('Pomocí moderních nástrojů jako React a Tailwind CSS vám mohu pomoci vytvořit webovou stránku, která vypadá skvěle a funguje hladce na všech zařízeních. Ať už potřebujete osobní portfolio, komunitní hub, nebo web pro vaši lokální firmu, jsem tu, abych vám ho pomohl oživit.', 'Using modern tools like React and Tailwind CSS, I can help you create a website that looks great and works smoothly across all devices. Whether you need a personal portfolio, a community hub, or a site for your local business, I am here to help bring it to life.')}
+          {t('Jsem studentem vysoké školy. Mým koníčkem je vytvářet stránky, které potěší lidi. Spokojenost zákazníka je moje spokojenost.', 'I am a university student. My hobby is creating websites that make people happy. Customer satisfaction is my satisfaction.')}
         </p>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg leading-relaxed">
-          {t('Když zrovna nepíšu kód, obvykle zkoumám nové webové trendy, učím se nové dovednosti, nebo hledám způsoby, jak dělat své projekty ještě lepší a rychlejší.', 'When I\'m not writing code, I\'m usually exploring new web trends, learning new skills, or finding ways to make my projects even better and faster.')}
+          {t('Jsem společenský člověk, který si rád pokecá o čemkoliv, rád hraje deskové hry nebo sportuje s kamarády (např. fotbal, jízda na kole...).', 'I am a sociable person who loves to chat about anything, play board games, or do sports with friends like football, cycling, ...')}
         </p>
       </motion.div>
 
