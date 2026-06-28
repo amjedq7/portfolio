@@ -8,30 +8,72 @@ import About from './components/About';
 import Contact from './components/Contact';
 
 const RedStars = () => {
-  const [stars, setStars] = useState<{ id: number; x: number; y: number; size: number; delay: number; duration: number }[]>([]);
+  const starsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const [starsData, setStarsData] = useState<{ id: number; ox: number; oy: number; size: number; delay: number; duration: number }[]>([]);
 
   useEffect(() => {
     // Generate 75 random stars on mount
     const newStars = Array.from({ length: 75 }).map((_, i) => ({
       id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
+      ox: Math.random() * 100,
+      oy: Math.random() * 100,
       size: Math.random() * 2 + 1,
       delay: Math.random() * 5,
       duration: Math.random() * 3 + 2,
     }));
-    setStars(newStars);
+    setStarsData(newStars);
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+
+      starsRef.current.forEach((starEl) => {
+        if (!starEl) return;
+        
+        // offsetLeft and offsetTop are independent of CSS transforms
+        const starX = starEl.offsetLeft + starEl.offsetWidth / 2;
+        const starY = starEl.offsetTop + starEl.offsetHeight / 2;
+
+        const dx = mouseX - starX;
+        const dy = mouseY - starY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        const maxDist = 150; // Influence radius
+        
+        if (dist < maxDist) {
+          const force = (maxDist - dist) / maxDist;
+          // Move away from mouse
+          const moveX = -(dx / dist) * force * 40; 
+          const moveY = -(dy / dist) * force * 40;
+          
+          starEl.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.5)`;
+        } else {
+          starEl.style.transform = `translate(0px, 0px) scale(1)`;
+        }
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
   }, []);
 
   return (
     <div className="absolute w-full h-full pointer-events-none z-0">
-      {stars.map((star) => (
+      {starsData.map((star, i) => (
         <div
           key={star.id}
-          className="absolute rounded-full bg-red-500 animate-pulse"
+          ref={(el) => {
+            starsRef.current[i] = el;
+          }}
+          className="absolute rounded-full bg-red-500 animate-pulse transition-transform duration-500 ease-out"
           style={{
-            left: `${star.x}%`,
-            top: `${star.y}%`,
+            left: `${star.ox}%`,
+            top: `${star.oy}%`,
             width: `${star.size}px`,
             height: `${star.size}px`,
             boxShadow: `0 0 ${star.size * 3}px ${star.size}px rgba(239, 68, 68, 0.8)`,
